@@ -12,7 +12,7 @@ export const singleSignOnAction = createAsyncThunk<
   },
   void,
   { rejectValue: PartialSingleError; state: RootState }
->("userAccount/singleSignOnAction", async (_, { rejectWithValue }) => {
+>("userAccount/singleSignOnAction", async (_, { rejectWithValue }): Promise<any> => {
   try {
     const response = await signInRedirectCallback();
     return {

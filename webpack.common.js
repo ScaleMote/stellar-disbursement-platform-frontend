@@ -5,8 +5,10 @@ const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const ESLintPlugin = require("eslint-webpack-plugin");
-const ProvidePlugin = require("webpack").ProvidePlugin;
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const { ProvidePlugin, DefinePlugin } = require("webpack");
+
+require("dotenv").config()
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -41,8 +43,6 @@ module.exports = {
   output: {
     filename: "static/[name].[contenthash].js",
     path: path.resolve(__dirname, "build"),
-    // This is needed to set correct path when refreshing on sub-pages (where
-    // path is not root)
     publicPath: "/",
   },
   module: {
@@ -53,7 +53,6 @@ module.exports = {
         use: {
           loader: "ts-loader",
           options: {
-            // Disable type checker, we will use it in ForkTsCheckerWebpackPlugin
             transpileOnly: true,
           },
         },
@@ -115,12 +114,10 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     plugins: [
-      // This handles aliases and resolves Design System CSS font paths properly
       new TsconfigPathsPlugin({
         configFile: path.resolve(__dirname, "./tsconfig.json"),
       }),
     ],
-    // Adding node.js modules
     fallback: {
       crypto: require.resolve("crypto-browserify"),
       stream: require.resolve("stream-browserify"),
@@ -130,10 +127,10 @@ module.exports = {
       os: require.resolve("os-browserify"),
       url: require.resolve("url"),
       buffer: require.resolve("buffer/"),
+      "path": require.resolve("path-browserify")
     },
   },
   plugins: [
-    // Buffer
     new ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
     }),
@@ -153,5 +150,11 @@ module.exports = {
       extensions: [".tsx", ".ts", ".js"],
       exclude: "node_modules",
     }),
+    new ProvidePlugin({
+      process: 'process/browser',
+    }),
+    new DefinePlugin({
+      "process.env": JSON.stringify(process.env)
+   }),
   ],
 };
