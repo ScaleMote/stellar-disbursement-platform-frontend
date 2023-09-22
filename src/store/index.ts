@@ -31,10 +31,8 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 const loggerMiddleware =
-  (storeVal: any) => (next: any) => (action: Action<any>) => {
-    console.log("Dispatching: ", action.type);
+  () => (next: any) => (action: Action<any>) => {
     const dispatchedAction = next(action);
-    console.log("NEW STATE: ", storeVal.getState());
     return dispatchedAction;
   };
 

@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import GitInfo from "generated/gitInfo";
 
 import { store } from "store";
 import { Routes } from "constants/settings";
@@ -46,11 +44,6 @@ const queryClient = new QueryClient({
 });
 
 export const App = () => {
-  useEffect(() => {
-    // Git commit hash
-    console.log("current commit hash: ", GitInfo.commitHash);
-  }, []);
-
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
